@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Quiz App</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #eaf0ff;
+  text-align: center;
+  padding: 20px;
+}
+.container {
+  background: white;
+  max-width: 450px;
+  margin: 30px auto;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px #bbb;
+}
+h1 { color: #304ffe; }
+button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: #304ffe;
+  color: white;
+  font-size: 16px;
+}
+button:hover { background: #172bb5; }
+#result { font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🧠 My Quiz App</h1>
+  <p id="progress"></p>
+  <h3 id="question"></h3>
+  <div id="answers"></div>
+  <p id="result"></p>
+  <button id="next" onclick="nextQuestion()" style="display:none">
+    Next Question
+  </button>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "What does HTML stand for?",
+    a: ["Hyper Text Markup Language", "High Text Machine Language", "Home Tool Markup Language"],
+    correct: 0
+  },
+  {
+    q: "Which language styles a website?",
+    a: ["Python", "CSS", "Java"],
+    correct: 1
+  },
+  {
+    q: "Which language makes a website interactive?",
+    a: ["JavaScript", "HTML", "SQL"],
+    correct: 0
+  },
+  {
+    q: "What does CPU stand for?",
+    a: ["Computer Personal Unit", "Central Processing Unit", "Control Program Utility"],
+    correct: 1
+  },
+  {
+    q: "Which device is used to type?",
+    a: ["Monitor", "Keyboard", "Speaker"],
+    correct: 1
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function showQuestion() {
+  answered = false;
+  document.getElementById("progress").textContent =
+    "Question " + (current + 1) + " of " + questions.length;
+  document.getElementById("question").textContent = questions[current].q;
+  document.getElementById("result").textContent = "";
+  document.getElementById("next").style.display = "none";
+
+  const box = document.getElementById("answers");
+  box.innerHTML = "";
+
+  questions[current].a.forEach((answer, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.onclick = () => checkAnswer(index);
+    box.appendChild(btn);
+  });
+}
+
+function checkAnswer(index) {
+  if (answered) return;
+  answered = true;
+
+  const correct = questions[current].correct;
+  if (index === correct) {
+    score++;
+    document.getElementById("result").textContent = "✅ Correct!";
+  } else {
+    document.getElementById("result").textContent =
+      "❌ Wrong! Correct answer: " + questions[current].a[correct];
+  }
+
+  document.getElementById("next").style.display = "block";
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    showQuestion();
+  } else {
+    document.querySelector(".container").innerHTML =
+      "<h1>🎉 Quiz Completed!</h1>" +
+      "<h2>Your Score: " + score + " / " + questions.length + "</h2>" +
+      "<button onclick='location.reload()'>Try Again</button>";
+  }
+}
+
+showQuestion();
+</script>
+</body>
+</html>
